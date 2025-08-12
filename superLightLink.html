@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>superLightLink</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 1em;
+      background: #fff;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>superLightLink</h1>
+  <p id="deviceInfo">読み込み中...</p>
+  <p id="loadTime"></p>
+
+  <script>
+    // デバイス・OS名取得（簡易版）
+    function getDeviceInfo() {
+      const ua = navigator.userAgent;
+      let device = '不明なデバイス';
+      let os = '不明なOS';
+
+      if (/Windows NT/.test(ua)) os = 'Windows';
+      else if (/Macintosh/.test(ua)) os = 'Mac';
+      else if (/Android/.test(ua)) os = 'Android';
+      else if (/iPhone|iPad|iPod/.test(ua)) os = 'iOS';
+      else if (/Linux/.test(ua)) os = 'Linux';
+
+      if (/Mobile/.test(ua)) device = 'モバイル端末';
+      else if (/Tablet/.test(ua)) device = 'タブレット端末';
+      else device = 'PC';
+
+      return { device, os };
+    }
+
+    // クエリパラメータからtsを取得
+    function getQueryTimestamp() {
+      const params = new URLSearchParams(location.search);
+      const ts = params.get('ts');
+      return ts ? Number(ts) : null;
+    }
+
+    window.addEventListener('load', () => {
+      const info = getDeviceInfo();
+      const now = Date.now();
+      const ts = getQueryTimestamp();
+
+      document.getElementById('deviceInfo').textContent =
+        `デバイス: ${info.device}、OS: ${info.os}`;
+
+      if (ts) {
+        const diff = now - ts;
+        document.getElementById('loadTime').textContent =
+          `リンククリックからページ表示までの時間: ${diff} ms`;
+      } else {
+        document.getElementById('loadTime').textContent =
+          'リンククリック時間情報がありません。';
+      }
+    });
+  </script>
+</body>
+</html>
